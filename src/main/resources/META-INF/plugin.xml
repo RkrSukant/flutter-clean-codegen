@@ -14,13 +14,25 @@
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
-    <extensions defaultExtensionNs="com.intellij" />
+    <extensions defaultExtensionNs="com.intellij"/>
 
     <actions>
-        <action class="com.example.fluttercleancodegen.NewFlutterProjectAction"
-            id="com.example.fluttercleancodegen.NewFlutterProjectAction"
-            text="New Flutter Project with Clean Structure">
-            <add-to-group anchor="last" group-id="NewGroup" />
+        <action class="com.example.fluttercleancodegen.newFeatureAction.NewFeatureAction"
+                id="com.example.fluttercleancodegen.newFlutterFeature"
+                text="New Flutter Feature Directory">
+            <add-to-group anchor="last" group-id="NewGroup"/>
+        </action>
+
+        <action class="com.example.fluttercleancodegen.newProjectAction.NewProjectAction"
+                id="com.example.fluttercleancodegen.newFlutterProject"
+                text="New Flutter Project with Clean Structure">
+            <add-to-group anchor="first" group-id="NewProjectOrModuleGroup"/>
+        </action>
+
+        <action class="com.example.fluttercleancodegen.newProjectAction.NewProjectAction"
+                id="com.example.fluttercleancodegen.newFlutterProjectWelcomeScreen"
+                text="New Flutter Project with Clean Structure">
+            <add-to-group anchor="first" group-id="WelcomeScreen.QuickStart"/>
         </action>
 
     </actions>
