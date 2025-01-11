@@ -1,87 +1,67 @@
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+package com.example.fluttercleancodegen.newProjectAction
+
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.ui.TextFieldWithBrowseButton
-import com.intellij.util.ui.JBUI
-import java.awt.Dimension
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
-import javax.swing.*
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.HorizontalAlign
+import javax.swing.JTextField
 
 class NewProjectDialog : DialogWrapper(true) {
-
-    private val projectNameField = JTextField(20)
-    private val locationField = TextFieldWithBrowseButton()
+    val projectNameField = JTextField()
+    val projectLocationField = JTextField()
 
     init {
+        title = "Create New Flutter Project"
         init()
-        title = "New Project with Clean Architecture"
+        projectLocationField.isEditable = false
+        isResizable = false
+
     }
 
-    override fun createCenterPanel(): JComponent? {
-        val panel = JPanel(GridBagLayout()).apply {
-            preferredSize = Dimension(500, 100)
-            border = JBUI.Borders.empty(10)
+    override fun createCenterPanel() = panel {
+        row("Project Name:") {
+            cell(projectNameField).horizontalAlign(HorizontalAlign.FILL)
+                .validationOnApply { validateProjectName(projectNameField) }
         }
+        row("Project Location:") {
+            cell(projectLocationField)
+                .resizableColumn().horizontalAlign(HorizontalAlign.FILL)
+                .validationOnApply { validateProjectLocation(projectLocationField) }
+            button("Browse...") {
+                val descriptor = FileChooserDescriptor(
+                    false, // Directories only
+                    true,  // Existing files and directories
+                    false, false, false, false
+                ).withTitle("Select Project Location")
+                    .withDescription("Choose a directory for the Flutter project.")
+                val selectedFile: VirtualFile? = FileChooser.chooseFile(descriptor, null, null)
 
-        val constraints = GridBagConstraints().apply {
-            insets = JBUI.insets(5)
-            anchor = GridBagConstraints.WEST
+                if (selectedFile != null) {
+                    projectLocationField.text = selectedFile.path
+                }
+            }
         }
-
-        // Project Name Label
-        constraints.gridx = 0
-        constraints.gridy = 0
-        constraints.fill = GridBagConstraints.NONE
-        constraints.weightx = 0.0
-        panel.add(JLabel("Project Name:"), constraints)
-
-        // Project Name Text Field
-        constraints.gridx = 1
-        constraints.fill = GridBagConstraints.HORIZONTAL
-        constraints.weightx = 1.0
-        panel.add(projectNameField, constraints)
-
-        // Project Location Label
-        constraints.gridx = 0
-        constraints.gridy = 1
-        constraints.fill = GridBagConstraints.NONE
-        constraints.weightx = 0.0
-        panel.add(JLabel("Location:"), constraints)
-
-        // Project Location Text Field with Browse Button
-        constraints.gridx = 1
-        constraints.fill = GridBagConstraints.HORIZONTAL
-        constraints.weightx = 1.0
-        locationField.addBrowseFolderListener(
-                "Choose Location",
-                null,
-                null,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor()
-        )
-        panel.add(locationField, constraints)
-
-        return panel
+    }.apply {
+        preferredSize = java.awt.Dimension(600,100)
+        preferredFocusedComponent = projectNameField
     }
 
-    override fun doOKAction() {
-        val projectName = projectNameField.text
-        val location = locationField.text
-        Messages.showMessageDialog(
-                "Project Name: $projectName\nLocation: $location",
-                "Project Information",
-                Messages.getInformationIcon()
-        )
-        super.doOKAction()
+    private fun validateProjectName(field: JTextField): ValidationInfo? {
+        return if (field.text.isBlank()) {
+            ValidationInfo("Project name cannot be empty", field)
+        } else {
+            null
+        }
     }
 
-    override fun isResizable(): Boolean {
-        return false
-    }
-}
-
-fun main() {
-    SwingUtilities.invokeLater {
-        NewProjectDialog().show()
+    private fun validateProjectLocation(field: JTextField): ValidationInfo? {
+        return if (field.text.isBlank()) {
+            ValidationInfo("Project location must be selected", field)
+        } else {
+            null
+        }
     }
 }

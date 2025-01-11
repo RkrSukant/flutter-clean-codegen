@@ -25,13 +25,14 @@
 
         <action class="com.example.fluttercleancodegen.newProjectAction.NewProjectAction"
                 id="com.example.fluttercleancodegen.newFlutterProject"
-                text="New Flutter Project with Clean Structure">
+                text="New Clean Flutter Project">
             <add-to-group anchor="first" group-id="NewProjectOrModuleGroup"/>
         </action>
 
         <action class="com.example.fluttercleancodegen.newProjectAction.NewProjectAction"
                 id="com.example.fluttercleancodegen.newFlutterProjectWelcomeScreen"
-                text="New Flutter Project with Clean Structure">
+                icon="AllIcons.Actions.NewFolder"
+                text="New Clean Flutter Project">
             <add-to-group anchor="first" group-id="WelcomeScreen.QuickStart"/>
         </action>
 
